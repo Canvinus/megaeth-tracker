@@ -2,6 +2,8 @@
 
 Real-time USDT balance flow monitor for Ethereum addresses with a beautiful terminal UI.
 
+![Screenshot](screenshot.png)
+
 ## Features
 
 - **Real-time Balance Tracking**: Updates every 10 seconds via Ethereum mainnet
