@@ -1,14 +1,15 @@
 import { createPublicClient, http, formatUnits } from 'viem';
 import { mainnet } from 'viem/chains';
 import blessed from 'blessed';
-import { writeFile, readFile } from 'fs/promises';
+import { writeFile, readFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 
-// USDT Contract on Ethereum Mainnet
+// Configuration
 const USDT_ADDRESS = '0xdac17f958d2ee523a2206206994597c13d831ec7';
 const MONITORED_ADDRESS = '0xab02bf85a7a851b6a379ea3d5bd3b9b4f5dd8461';
 const UPDATE_INTERVAL = 10000; // 10 seconds
-const DATA_FILE = './balance_history.json';
+const DATA_DIR = './.data';
+const DATA_FILE = `${DATA_DIR}/balance_history.json`;
 
 // Minimal ERC20 ABI for balanceOf
 const erc20Abi = [
@@ -37,9 +38,17 @@ const publicClient = createPublicClient({
   transport: http(),
 });
 
+// Ensure data directory exists
+async function ensureDataDir(): Promise<void> {
+  if (!existsSync(DATA_DIR)) {
+    await mkdir(DATA_DIR, { recursive: true });
+  }
+}
+
 // Load historical data from disk
 async function loadHistory(): Promise<void> {
   try {
+    await ensureDataDir();
     if (existsSync(DATA_FILE)) {
       const data = await readFile(DATA_FILE, 'utf-8');
       balanceHistory = JSON.parse(data);
@@ -54,6 +63,7 @@ async function loadHistory(): Promise<void> {
 // Save historical data to disk
 async function saveHistory(): Promise<void> {
   try {
+    await ensureDataDir();
     await writeFile(DATA_FILE, JSON.stringify(balanceHistory, null, 2));
   } catch (error) {
     console.error('Error saving history:', error);

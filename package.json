@@ -1,8 +1,13 @@
 {
-  "name": "polymarket",
+  "name": "megaeth-tracker",
+  "version": "1.0.0",
+  "description": "Real-time USDT balance flow monitor for Ethereum addresses",
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "start": "bun run index.ts"
+  },
   "devDependencies": {
     "@types/blessed": "^0.1.25",
     "@types/bun": "latest"
